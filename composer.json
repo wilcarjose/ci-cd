@@ -1,0 +1,17 @@
+{
+    "name": "ampliffy/ci-cd",
+    "description": "CI/CD library that lets you know which repositories have been affected by a change in any of the repositories it includes",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Ampliffy\\CiCd\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Wilcar José Angulo S",
+            "email": "wilcarjose@gmail.com"
+        }
+    ],
+    "require": {}
+}
