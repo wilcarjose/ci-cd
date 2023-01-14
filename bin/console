@@ -1,10 +1,10 @@
 #!/usr/bin/env php
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../bootstrap/di_container.php';
 
 use Symfony\Component\Console\Application;
 use Ampliffy\CiCd\Commands\HandleCommitCommand;
 
 $app = new Application();
-$app->add(new HandleCommitCommand());
+$app->add(new HandleCommitCommand($containerBuilder->get('services.repository'), $containerBuilder->get('services.commit')));
 $app->run();

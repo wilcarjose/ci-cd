@@ -21,6 +21,7 @@
         "doctrine/dbal": "^3.5",
         "symfony/cache": "^6.2",
         "vlucas/phpdotenv": "^5.5",
-        "doctrine/annotations": "^2.0"
+        "doctrine/annotations": "^2.0",
+        "symfony/dependency-injection": "^6.2"
     }
 }

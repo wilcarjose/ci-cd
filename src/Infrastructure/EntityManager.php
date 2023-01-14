@@ -9,6 +9,8 @@ class EntityManager
 {
     private $em;
 
+    private static $instances = [];
+
     public function __construct()
     {
         $dotenv = Dotenv::createImmutable(__DIR__.'/../../');
@@ -27,6 +29,22 @@ class EntityManager
 
         $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, null, null, false);
         $this->em = \Doctrine\ORM\EntityManager::create($dbParams, $config);
+    }
+
+    protected function __clone() { }
+
+    public function __wakeup()
+    {
+        throw new \Exception("Cannot unserialize singleton");
+    }
+
+    public static function getInstance()
+    {
+        $subclass = static::class;
+        if (!isset(self::$instances[$subclass])) {
+            self::$instances[$subclass] = (new static())->em;
+        }
+        return self::$instances[$subclass];
     }
 
     public function get()
