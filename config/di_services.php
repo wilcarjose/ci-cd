@@ -6,6 +6,8 @@ use Ampliffy\CiCd\Domain\Repositories\CommitRepositoryInterface;
 use Ampliffy\CiCd\Domain\Repositories\RepositoryRepositoryInterface;
 use Ampliffy\CiCd\Infrastructure\EntityManager;
 use Ampliffy\CiCd\Domain\Services\CommitService;
+use Ampliffy\CiCd\Domain\Services\ComposerJsonService;
+use Ampliffy\CiCd\Domain\Services\DependencyTreeService;
 use Ampliffy\CiCd\Domain\Services\RepositoryService;
 use Ampliffy\CiCd\Infrastructure\Repositories\BaseDoctrineRepository;
 use Ampliffy\CiCd\Infrastructure\Repositories\CommitDoctrineRepository;
@@ -33,10 +35,15 @@ return static function (ContainerConfigurator $containerConfigurator) {
     //$services->set('repositories.commit', CommitRepositoryInterface::class);
 
     $services->alias(CommitRepositoryInterface::class, CommitDoctrineRepository::class);
-    //$services->set('repositories.repository', RepositoryRepositoryInterface::class);
+
+    $services->set('services.composer_json', ComposerJsonService::class);
+    
+    $services->set('services.dependency_tree', DependencyTreeService::class)
+        ->args([service('services.composer_json'), service('doctrine.repositories.repository')])
+        ;
 
     $services->set('services.repository', RepositoryService::class)
-        ->args([service('doctrine.repositories.repository')]);
+        ->args([service('doctrine.repositories.repository'), service('services.dependency_tree'), service('services.composer_json')]);
 
     $services->set('services.commit', CommitService::class)
         ->args([service('doctrine.repositories.commit'), service('services.repository')]);
