@@ -8,7 +8,7 @@ use Ampliffy\CiCd\Domain\Dto\RepositoryDto;
 use Doctrine\Common\Collections\Collection;
 use Ampliffy\CiCd\Domain\Entities\Repository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Ampliffy\CiCd\Domain\Exceptions\DontExistComposerFileException;
+use Ampliffy\CiCd\Domain\Exceptions\DoesNotExistComposerFileException;
 use Ampliffy\CiCd\Domain\Services\ComposerJsonService;
 use Ampliffy\CiCd\Domain\Repositories\RepositoryRepositoryInterface;
 
@@ -45,7 +45,7 @@ class RepositoryService
                     $this->repositoryRepository->createRepository(RepositoryDto::fromComposerJson($composerData, $folder));
                 }
 
-            } catch (DontExistComposerFileException $e) {
+            } catch (DoesNotExistComposerFileException $e) {
                 Log::debug($e->getMessage());
             }
 
