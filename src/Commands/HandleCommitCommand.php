@@ -1,12 +1,13 @@
 <?php
 namespace Ampliffy\CiCd\Commands;
 
+use Ampliffy\CiCd\Infrastructure\Log;
 use Ampliffy\CiCd\Domain\Dto\CommitDto;
-use Ampliffy\CiCd\Domain\Services\CommitService;
-use Ampliffy\CiCd\Domain\Services\RepositoryService;
 use Symfony\Component\Console\Command\Command;
+use Ampliffy\CiCd\Domain\Services\CommitService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Ampliffy\CiCd\Domain\Services\RepositoryService;
 use Symfony\Component\Console\Output\OutputInterface;
  
 class HandleCommitCommand extends Command
@@ -34,6 +35,10 @@ class HandleCommitCommand extends Command
         $affectedRepositories = $this->repositoryService->getAffectedByCommit($commitDto);
         $commit = $this->commitService->store($commitDto);
         $this->commitService->attachAffectedRepositories($commit, $affectedRepositories);
+
+        $affectedRepositories->map(function($repository) {
+            Log::debug('Nombre de proyecto afectado: ' . $repository->getComposerName());
+        });
         
         return Command::SUCCESS;
     }
