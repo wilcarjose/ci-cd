@@ -2,19 +2,17 @@
 
 namespace Ampliffy\CiCd\Domain\Services;
 
-use Ampliffy\CiCd\Domain\Repositories\CommitRepositoryInterface;
 use Ampliffy\CiCd\Domain\Dto\CommitDto;
 use Ampliffy\CiCd\Domain\Entities\Commit;
-use Ampliffy\CiCd\Domain\Entities\Repository;
-use Ampliffy\CiCd\Infrastructure\EntityManager;
 use Doctrine\Common\Collections\Collection;
+use Ampliffy\CiCd\Domain\Repositories\CommitRepositoryInterface;
 
 class CommitService
 {
-    public function __construct(protected CommitRepositoryInterface $commitRepository, protected RepositoryService $repositoryService)
-    {
-
-    }
+    public function __construct(
+        protected CommitRepositoryInterface $commitRepository,
+        protected RepositoryService $repositoryService
+    ) {}
 
     public function store(CommitDto $commitDto) : Commit
     {
