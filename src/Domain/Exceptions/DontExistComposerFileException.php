@@ -2,7 +2,7 @@
 
 namespace Ampliffy\CiCd\Domain\Exceptions;
 
-class ComposerException extends \Exception
+class DontExistComposerFileException extends \Exception
 {
 
 }

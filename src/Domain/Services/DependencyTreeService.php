@@ -5,7 +5,7 @@ namespace Ampliffy\CiCd\Domain\Services;
 use Ampliffy\CiCd\Infrastructure\Log;
 use Ampliffy\CiCd\Domain\Entities\Repository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Ampliffy\CiCd\Domain\Exceptions\ComposerException;
+use Ampliffy\CiCd\Domain\Exceptions\DontExistComposerFileException;
 use Ampliffy\CiCd\Domain\Repositories\RepositoryRepositoryInterface;
 
 class DependencyTreeService
@@ -57,7 +57,7 @@ class DependencyTreeService
     {
         try {
             $composerDependencies = $this->composerJsonService->librariesRequired($repository->getGitPath());
-        } catch (ComposerException $e) {
+        } catch (DontExistComposerFileException $e) {
             Log::debug($e->getMessage());
             return new ArrayCollection();
         }

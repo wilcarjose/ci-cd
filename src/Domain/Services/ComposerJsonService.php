@@ -4,7 +4,7 @@ namespace Ampliffy\CiCd\Domain\Services;
 
 use Ampliffy\CiCd\Infrastructure\Log;
 use Doctrine\Common\Collections\ArrayCollection;
-use Ampliffy\CiCd\Domain\Exceptions\ComposerException;
+use Ampliffy\CiCd\Domain\Exceptions\DontExistComposerFileException;
 
 class ComposerJsonService
 {
@@ -18,7 +18,7 @@ class ComposerJsonService
         $file = $_ENV['BASE_PATH'] . $path . '/composer.json';
 
         if (!file_exists($file)) {
-            throw new ComposerException('Composer file does not exists: ' . $file); 
+            throw new DontExistComposerFileException('Composer file does not exists: ' . $file); 
         }
 
         return $file;
