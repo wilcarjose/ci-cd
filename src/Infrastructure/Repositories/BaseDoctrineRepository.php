@@ -10,8 +10,12 @@ abstract class BaseDoctrineRepository
 {
     protected $em;
 
+    protected $queryBuilder;
+
     public function __construct(protected EntityManager $entityManager)
     {
-        $this->em = $entityManager->get();    
+        $this->em = $entityManager->get();
+
+        $this->queryBuilder = $this->em->createQueryBuilder();
     }
 }

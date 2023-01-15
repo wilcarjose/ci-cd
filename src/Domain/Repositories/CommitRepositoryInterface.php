@@ -6,8 +6,8 @@ namespace Ampliffy\CiCd\Domain\Repositories;
 
 use Ampliffy\CiCd\Domain\Dto\CommitDto;
 use Ampliffy\CiCd\Domain\Entities\Commit;
-use Ampliffy\CiCd\Domain\Entities\Repository;
 use Doctrine\Common\Collections\Collection;
+use Ampliffy\CiCd\Domain\Entities\Repository;
 
 interface CommitRepositoryInterface
 {

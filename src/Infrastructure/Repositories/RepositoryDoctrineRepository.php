@@ -4,65 +4,65 @@ declare(strict_types = 1);
 
 namespace Ampliffy\CiCd\Infrastructure\Repositories;
 
+use Ampliffy\CiCd\Domain\Dto\RepositoryDto;
 use Ampliffy\CiCd\Domain\Entities\Repository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ampliffy\CiCd\Domain\Repositories\RepositoryRepositoryInterface;
 
 class RepositoryDoctrineRepository extends BaseDoctrineRepository implements RepositoryRepositoryInterface
 {
-    public function getAll()
+    public function getAll() : ArrayCollection
     {
-        $qb = $this->em->createQueryBuilder();
-
-        return $qb->select('r')
+        $repositories = $this->queryBuilder->select('r')
             ->from(Repository::class, 'r')
             ->getQuery()
             ->getResult();
+
+        return new ArrayCollection($repositories);
     }
 
-    public function createRepositories()
+    public function getByGitPath(string $gitPath) : Repository|null
     {
-        $items = new ArrayCollection();
+        $query = $this->em->createQuery('SELECT a FROM Ampliffy\CiCd\Domain\Entities\Repository a WHERE a.gitPath = :gitPath');
+        $query->setParameter('gitPath', $gitPath);
         
-        $repo1 = (new Repository)
-            ->setComposerName('ampliffy/library-1')
-            ->setGitPath('/home/code/ampliffy/library_1')
-            ->setType('library');
+        return $query->setMaxResults(1)
+            ->getOneOrNullResult();
+    }
 
-        $this->em->persist($repo1);
-        $items->add($repo1);
+    public function getByComposerName(string $composerName) : Repository|null
+    {
+        $query = $this->em->createQuery('SELECT a FROM Ampliffy\CiCd\Domain\Entities\Repository a WHERE a.composerName = :composerName');
+        $query->setParameter('composerName', $composerName);
         
-        $repo2 = (new Repository)
-            ->setComposerName('ampliffy/library-2')
-            ->setGitPath('/home/code/ampliffy/library_2')
-            ->setType('library');
+        return $query->setMaxResults(1)
+            ->getOneOrNullResult();
+    }
 
-        $this->em->persist($repo2);
-        $items->add($repo2);
-
-        $repo3 = (new Repository)
-            ->setComposerName('ampliffy/project-1')
-            ->setGitPath('/home/code/ampliffy/project_3')
-            ->setType('project');
-
-        $this->em->persist($repo3);
-        $items->add($repo3);
-
+    public function update(Repository $repository) : Repository
+    {
+        $this->em->persist($repository);
         $this->em->flush();
 
-        return $items;
+        return $repository;
     }
 
-    public function getByGitPath(string $gitPath) : Repository
-    {
-        $qb = $this->em->createQueryBuilder();
+    public function createRepository(RepositoryDto $repositoryDto) : Repository
+    {       
+        $repository = (new Repository)
+            ->setComposerName($repositoryDto->composer_name)
+            ->setGitPath($repositoryDto->git_path)
+            ->setType($repositoryDto->type);
 
-        return $qb->select('r')
-            ->from(Repository::class, 'r')
-            ->where('r.gitPath = ?1')
-            ->setParameter(1, $gitPath)
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleResult();
+        $this->em->persist($repository);
+        
+        $this->em->flush();
+
+        return $repository;
+    }
+
+    public function doesNotExistByGitPath(string $gitPath) : bool
+    {
+        return is_null($this->getByGitPath($gitPath));
     }
 }

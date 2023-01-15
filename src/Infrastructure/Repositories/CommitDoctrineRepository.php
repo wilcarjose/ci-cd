@@ -7,8 +7,8 @@ namespace Ampliffy\CiCd\Infrastructure\Repositories;
 use Ampliffy\CiCd\Domain\Dto\CommitDto;
 use Ampliffy\CiCd\Domain\Entities\Commit;
 use Doctrine\Common\Collections\Collection;
-use Ampliffy\CiCd\Domain\Repositories\CommitRepositoryInterface;
 use Ampliffy\CiCd\Domain\Entities\Repository;
+use Ampliffy\CiCd\Domain\Repositories\CommitRepositoryInterface;
 
 class CommitDoctrineRepository extends BaseDoctrineRepository implements CommitRepositoryInterface
 {
