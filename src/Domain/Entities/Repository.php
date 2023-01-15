@@ -49,7 +49,7 @@ class Repository
      *
      * @ORM\Column(type="integer", name="composer_modified_at", nullable="true")
      */
-    private int|null $composerModifiedAt;
+    private int|null $composerModifiedAt = null;
 
     /**
      * 
@@ -207,5 +207,27 @@ class Repository
     public function getDependencies() : Collection
     {
         return $this->dependencies;
+    }
+
+    public function hasNoDependencies()
+    {
+        return $this->dependencies->isEmpty();
+    }
+
+    public function hasNotBeenAnalyzed()
+    {
+        return is_null($this->composerModifiedAt);
+    }
+
+    public function hasDifferentComposerModifiedAt(int $modifiedAt) : bool
+    {
+        return $this->composerModifiedAt != $modifiedAt;
+    }
+
+    public function addDependency(Repository $repository)
+    {
+        $this->dependencies->add($repository);
+
+        return $this;
     }
 }
