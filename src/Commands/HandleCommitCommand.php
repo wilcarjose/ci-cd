@@ -1,8 +1,9 @@
 <?php
 namespace Ampliffy\CiCd\Commands;
 
-use Ampliffy\CiCd\Dto\CommitDto;
-use Ampliffy\CiCd\Services\RepositoryService;
+use Ampliffy\CiCd\Domain\Dto\CommitDto;
+use Ampliffy\CiCd\Domain\Services\CommitService;
+use Ampliffy\CiCd\Domain\Services\RepositoryService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,6 +11,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  
 class HandleCommitCommand extends Command
 {
+    public function __construct(protected RepositoryService $repositoryService, protected CommitService $commitService)
+    {
+        parent::__construct();
+    }
+
     protected function configure()
     {
         $this->setName('check-commit')
@@ -24,9 +30,11 @@ class HandleCommitCommand extends Command
     {
         $output->writeln(sprintf('Getting repositories affected ... '));
         $output->writeln(sprintf('url: %s, commit id: %s, branch: %s', $input->getArgument('git_url'), $input->getArgument('commit_id'), $input->getArgument('branch')));
-
-        $affectedRepositories = (new RepositoryService)->getAffectedByCommit(CommitDto::fromInput($input));
-
+        $commitDto = CommitDto::fromInput($input);
+        $affectedRepositories = $this->repositoryService->getAffectedByCommit($commitDto);
+        $commit = $this->commitService->store($commitDto);
+        $this->commitService->attachAffectedRepositories($commit, $affectedRepositories);
+        
         return Command::SUCCESS;
     }
 }

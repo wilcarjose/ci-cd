@@ -2,10 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace Ampliffy\CiCd\Entities;
+namespace Ampliffy\CiCd\Domain\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ampliffy\CiCd\Collections\RepositoryCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -47,9 +48,9 @@ class Commit
     /**
      * 
      * Repositories affected by it.
-     * @var RepositoryCollection<Repository>
+     * @var Collection<Repository>
      * 
-     * @ORM\ManyToMany(targetEntity="Repository")
+     * @ORM\ManyToMany(targetEntity="Repository", cascade={"persist"})
      * @ORM\JoinTable(name="affected_repositories",
      *   joinColumns={
      *    @ORM\JoinColumn(name="commit_id", referencedColumnName="id")
@@ -60,10 +61,11 @@ class Commit
      * )
      * 
      */
-    private RepositoryCollection $affectedRepositories;
+    private Collection $affectedRepositories;
 
-    public function __construct() {
-        $this->affectedRepositories = new RepositoryCollection();
+    public function __construct()
+    {
+        $this->affectedRepositories = new ArrayCollection();
     }
 
     /**
@@ -151,10 +153,15 @@ class Commit
     /**
      * Get repositories affected by it.
      *
-     * @return  RepositoryCollection<Repository>
+     * @return  Collection<Repository>
      */ 
-    public function getAffectedRepositories() : RepositoryCollection
+    public function getAffectedRepositories() : Collection
     {
         return $this->affectedRepositories;
+    }
+
+    public function addAffectedRepository(Repository $repository)
+    {
+        $this->affectedRepositories->add($repository);
     }
 }

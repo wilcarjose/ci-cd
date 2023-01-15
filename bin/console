@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-require_once __DIR__ . '/../bootstrap/di_container.php';
+require_once __DIR__ . '/../bootstrap.php';
 
 use Symfony\Component\Console\Application;
 use Ampliffy\CiCd\Commands\HandleCommitCommand;

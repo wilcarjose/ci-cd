@@ -2,10 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace Ampliffy\CiCd\Entities;
+namespace Ampliffy\CiCd\Domain\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ampliffy\CiCd\Collections\RepositoryCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -46,23 +47,23 @@ class Repository
     /**
      * @var int
      *
-     * @ORM\Column(type="integer", name="composer_modified_at")
+     * @ORM\Column(type="integer", name="composer_modified_at", nullable="true")
      */
     private int|null $composerModifiedAt;
 
     /**
      * 
      * Repositories where it is used.
-     * @var RepositoryCollection<Repository>
+     * @var Collection<Repository>
      * 
      * @ORM\ManyToMany(targetEntity=Repository::class, mappedBy="dependencies")
      */
-    private RepositoryCollection $usedIn;
+    private Collection $usedIn;
 
     /**
      * 
      * Repositories it depends on.
-     * @var RepositoryCollection<Repository>
+     * @var Collection<Repository>
      * 
      * @ORM\ManyToMany(targetEntity="Repository", inversedBy="usedIn")
      * @ORM\JoinTable(name="dependency_tree",
@@ -75,11 +76,11 @@ class Repository
      * )
      * 
      */
-    private RepositoryCollection $dependencies;
+    private Collection $dependencies;
 
     public function __construct() {
-        $this->usedIn = new RepositoryCollection();
-        $this->dependencies = new RepositoryCollection();
+        $this->usedIn = new ArrayCollection();
+        $this->dependencies = new ArrayCollection();
     }
 
     /**
@@ -191,9 +192,9 @@ class Repository
     /**
      * Get repository where it is used>
      *
-     * @return  RepositoryCollection,
+     * @return  Collection,
      */ 
-    public function getUsedIn() : RepositoryCollection
+    public function getUsedIn() : Collection
     {
         return $this->usedIn;
     }
@@ -201,11 +202,10 @@ class Repository
     /**
      * Get repositories it depends on.
      *
-     * @return  RepositoryCollection
+     * @return  Collection
      */ 
-    public function getDependencies() : RepositoryCollection
+    public function getDependencies() : Collection
     {
         return $this->dependencies;
     }
-
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ampliffy\CiCd\Dto;
+namespace Ampliffy\CiCd\Domain\Dto;
 
 use Symfony\Component\Console\Input\InputInterface;
 
