@@ -16,7 +16,7 @@ class CommitService
 
     public function store(CommitDto $commitDto) : Commit
     {
-        $repository = $this->repositoryService->getByGitPath($commitDto->git_url);
+        $repository = $this->repositoryService->getByGitPath($commitDto->git_path);
         return $this->commitRepository->store($commitDto, $repository);
     }
 

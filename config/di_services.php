@@ -4,6 +4,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Ampliffy\CiCd\Infrastructure\EntityManager;
 use Ampliffy\CiCd\Domain\Services\CommitService;
+use Ampliffy\CiCd\Domain\Services\DirectoryService;
 use Ampliffy\CiCd\Domain\Services\RepositoryService;
 use Ampliffy\CiCd\Domain\Services\ComposerJsonService;
 use Ampliffy\CiCd\Domain\Services\DependencyTreeService;
@@ -39,16 +40,26 @@ return static function (ContainerConfigurator $containerConfigurator) {
     $services->set('services.composer_json', ComposerJsonService::class);
     
     $services->set('services.dependency_tree', DependencyTreeService::class)
-        ->args([service('services.composer_json'), service('doctrine.repositories.repository')])
-        ;
+        ->args([
+            service('services.composer_json'), 
+            service('doctrine.repositories.repository')
+        ]);
+
+    $services->set('services.directory', DirectoryService::class);
 
     $services->set('services.repository', RepositoryService::class)
-        ->args([service('doctrine.repositories.repository'), service('services.dependency_tree'), service('services.composer_json')]);
+        ->args([
+            service('doctrine.repositories.repository'),
+            service('services.dependency_tree'),
+            service('services.composer_json'),
+            service('services.directory')
+        ]);
 
     $services->set('services.commit', CommitService::class)
-        ->args([service('doctrine.repositories.commit'), service('services.repository')]);
-
-    
+        ->args([
+            service('doctrine.repositories.commit'),
+            service('services.repository')
+        ]);
 
     $services->set(CommitDoctrineRepository::class)
         ->parent(BaseDoctrineRepository::class);

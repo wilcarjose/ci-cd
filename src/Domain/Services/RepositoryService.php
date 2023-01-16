@@ -17,7 +17,8 @@ class RepositoryService
     public function __construct(
         protected RepositoryRepositoryInterface $repositoryRepository,
         protected DependencyTreeService $dependencyTreeService,
-        protected ComposerJsonService $composerJsonService
+        protected ComposerJsonService $composerJsonService,
+        protected DirectoryService $directoryService
     ) {}
 
     public function getAffectedByCommit(CommitDto $commitDto) : Collection
@@ -26,7 +27,7 @@ class RepositoryService
 
         $affectedRepositories = $repositories->filter(function($repository) use ($commitDto) {
             // check which repositories are affected
-            return $this->dependencyTreeService->hasDependency($repository, $commitDto->git_url);
+            return $this->dependencyTreeService->hasDependency($repository, $commitDto->git_path);
         });
 
         return $affectedRepositories;
@@ -34,19 +35,19 @@ class RepositoryService
 
     public function getAll() : ArrayCollection
     {
-        $directories = $this->getDirectoriesNamesFromBasePath();
+        $directories = $this->directoryService->getDirectoriesNamesFromBasePath();
 
-        $directories->map(function ($folder) {
+        $directories->map(function ($directory) {
 
             try {
 
-                if ($this->repositoryRepository->doesNotExistByGitPath($folder)) {
-                    $composerData = $this->composerJsonService->getComposerContent($folder);
-                    $this->repositoryRepository->createRepository(RepositoryDto::fromComposerJson($composerData, $folder));
+                if ($this->repositoryRepository->doesNotExistByGitPath($directory)) {
+                    $composerData = $this->composerJsonService->getComposerContent($directory);
+                    $this->repositoryRepository->createRepository(RepositoryDto::fromComposerJson($composerData, $directory));
                 }
 
             } catch (DoesNotExistComposerFileException $e) {
-                Log::debug($e->getMessage());
+                //Log::debug($e->getMessage());
             }
 
         });
@@ -57,21 +58,5 @@ class RepositoryService
     public function getByGitPath(string $gitPath) : Repository|null
     {
         return $this->repositoryRepository->getByGitPath($gitPath);
-    }
-
-    protected function getDirectoriesNamesFromBasePath() : ArrayCollection
-    {
-        $directories = scandir($_ENV['BASE_PATH']);
-
-        if ($directories === false) {
-            return new ArrayCollection();
-        }
-
-        return (new ArrayCollection($directories))->filter(fn ($dir) => $this->isDirectory($dir));
-    }
-
-    protected function isDirectory($name) : bool
-    {
-        return is_dir($_ENV['BASE_PATH'] . $name);
     }
 }

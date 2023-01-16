@@ -3,6 +3,7 @@
 namespace Ampliffy\CiCd\Domain\Services;
 
 use Ampliffy\CiCd\Infrastructure\Log;
+use Doctrine\ORM\PersistentCollection;
 use Ampliffy\CiCd\Domain\Entities\Repository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ampliffy\CiCd\Domain\Exceptions\DoesNotExistComposerFileException;
@@ -18,7 +19,8 @@ class DependencyTreeService
     public function hasDependency(Repository $repository, string $gitPath) : bool
     {
         $this->refreshDependencies($repository);
-        $repositoryUpdated = $this->repositoryRepository->getByGitPath($gitPath);
+        $composerName = $this->composerJsonService->getComposerName($gitPath);
+        $repositoryUpdated = $this->repositoryRepository->getByComposerName($composerName);
 
         if (is_null($repositoryUpdated)) {
             return false;
@@ -53,7 +55,7 @@ class DependencyTreeService
         return $repository->getDependencies();
     }
 
-    public function generateDependenciesFromComposerJson($repository)
+    public function generateDependenciesFromComposerJson($repository) : ArrayCollection|PersistentCollection
     {
         try {
             $composerDependencies = $this->composerJsonService->librariesRequired($repository->getGitPath());

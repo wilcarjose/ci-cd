@@ -8,7 +8,7 @@ class CommitDto
 {
     public function __construct(
         public readonly string $commit_id,
-        public readonly string $git_url,
+        public readonly string $git_path,
         public readonly string $branch
     ) {}
 
@@ -16,7 +16,7 @@ class CommitDto
     {
         return new static(
             commit_id: $input->getArgument('commit_id'),
-            git_url: $input->getArgument('git_url'),
+            git_path: $input->getArgument('git_path'),
             branch: $input->getArgument('branch'),
         );
     }
@@ -26,7 +26,7 @@ class CommitDto
         // it can be useful to make this dto from http requests
         return new static(
             commit_id: $request->commit_id,
-            git_url: $request->git_url,
+            git_path: $request->git_path,
             branch: $request->branch,
         );
     }
@@ -35,7 +35,7 @@ class CommitDto
     {
         return [
             'commit_id' => $this->commit_id,
-            'git_url' => $this->git_url,
+            'git_path' => $this->git_path,
             'branch' => $this->branch
         ];
     }
