@@ -2,13 +2,13 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Ampliffy\CiCd\Domain\Repositories\CommitRepositoryInterface;
-use Ampliffy\CiCd\Domain\Repositories\RepositoryRepositoryInterface;
 use Ampliffy\CiCd\Infrastructure\EntityManager;
 use Ampliffy\CiCd\Domain\Services\CommitService;
+use Ampliffy\CiCd\Domain\Services\RepositoryService;
 use Ampliffy\CiCd\Domain\Services\ComposerJsonService;
 use Ampliffy\CiCd\Domain\Services\DependencyTreeService;
-use Ampliffy\CiCd\Domain\Services\RepositoryService;
+use Ampliffy\CiCd\Domain\Repositories\CommitRepositoryInterface;
+use Ampliffy\CiCd\Domain\Repositories\RepositoryRepositoryInterface;
 use Ampliffy\CiCd\Infrastructure\Repositories\BaseDoctrineRepository;
 use Ampliffy\CiCd\Infrastructure\Repositories\CommitDoctrineRepository;
 use Ampliffy\CiCd\Infrastructure\Repositories\RepositoryDoctrineRepository;
